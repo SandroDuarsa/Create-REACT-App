@@ -8,26 +8,36 @@ export class Home extends Component {
     super(props);
     this.state = {
       colors: ['red','blue','green','yellow','purple','brown'],
-      activeColor: "all",
-      display: true
+      activeColor: "",
+      randomNumber: []
     }
  
   }
 
+  componentDidMount() {
+    let random = [];
+    for(let i=0; i<40; i++) {
+      random.push(Math.floor(Math.random() * this.state.colors.length));
+    }
+    this.setState({
+      randomNumber: random
+    });
+  }
 
   //display color tile
   colorBox = () => {
-  let Color = [];
+    let Color = [];
+    let num = 0;
 
     for(let indexRow = 1; indexRow <= 8; indexRow++){
       let Column = [];
   
       for(let indexCol = 1; indexCol <= 5; indexCol++){
-        const num = Math.floor(Math.random() * this.state.colors.length);
-        const randomColor = this.state.colors[num];
-        const hide = this.state.activeColor == "all" || randomColor == this.state.activeColor;//hiding color
+        const randomColor = this.state.colors[this.state.randomNumber[num++]];
+        let hide = this.state.activeColor == "" || randomColor == this.state.activeColor;//hiding color
+        let visible = !hide ? "hidden" : "visible";
         Column.push(
-          <div style={{backgroundColor: randomColor, width:"100px",height:"100px"}} hidden={!hide}>
+          <div style={{backgroundColor: randomColor, visibility: visible, width:"100px",height:"100px"}}>
           </div>
         )
       }
@@ -40,7 +50,6 @@ export class Home extends Component {
 
   //filter the color
   filter = e => {
-    console.log(e.target.value)
     this.setState({
       activeColor: e.target.value
     });
@@ -51,7 +60,7 @@ export class Home extends Component {
         <div>
           
        <h1>Color</h1>
-       <h1 fontsize="10px">Type the color name to filter : <input onChange={this.filter} /></h1>
+       <h1 fontSize="10px">Type the color name to filter : <input onChange={this.filter} /></h1>
        {this.colorBox()}
 
       </div>
